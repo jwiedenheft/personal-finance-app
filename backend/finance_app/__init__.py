@@ -2,6 +2,7 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
+import os
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -16,9 +17,12 @@ def create_app(test_config=None):
     except:
         pass
 
-    app.config[
-        "SQLALCHEMY_DATABASE_URI"
-    ] = f"mysql+pymysql://root:{password}@db/finances"
+    if os.environ.get("FLASK_ENV") == "production":
+        app.config[
+            "SQLALCHEMY_DATABASE_URI"
+        ] = f"mysql+pymysql://root:{password}@db/finances"
+    else:
+        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///"
 
     db.init_app(app)
     migrate.init_app(app, db)
