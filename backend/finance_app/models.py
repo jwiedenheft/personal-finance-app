@@ -1,6 +1,6 @@
 import enum
 from typing import List
-from . import db
+from finance_app import db
 from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime

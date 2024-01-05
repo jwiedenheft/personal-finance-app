@@ -1,5 +1,5 @@
 from finance_app.main import main
-from finance_app.database.models import Expense
+from finance_app.models import Expense
 
 
 @main.route("/")
