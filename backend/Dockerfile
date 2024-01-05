@@ -13,6 +13,8 @@ ENV FLASK_ENV development
 ENV FLASK_RUN_PORT 8000
 ENV FLASK_RUN_HOST 0.0.0.0
 
+RUN flask db upgrade
+
 EXPOSE 8000
 
 CMD ["flask", "run"]
