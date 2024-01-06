@@ -1,0 +1,13 @@
+
+<table>
+    <tr>
+        <th>Code</th>
+        <th>Title</th>
+    </tr>
+    {% for cat in categories %} 
+        <tr>
+            <td>{{ cat.code }}</td>
+            <td>{{ cat.title }}</td>
+        </tr>
+    {% endfor %}
+</table>

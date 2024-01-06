@@ -1,16 +1,17 @@
 
 <table>
-    <th>
-        <td>Date</td>
-        <td>Title</td>
-        <td>Amount</td>
-        <td>Category</td>
-        <td>Tags</td>
-    </th>
+    <tr>
+        <th>Date</th>
+        <th>Title</th>
+        <th>Amount</th>
+        <th>Category</th>
+        <th>Tags</th>
+    </tr>
     {% for expense in expenses %} 
         <tr>
-            <td>{{ expense.date }}</td>
+            <td>{{ expense.date.strftime('%y/%m/%d') }}</td>
             <td>{{ expense.title }}</td>
+            <td>{{ expense.amount }}</td>
             <td>{{ expense.category }}</td>
             <td>{{ expense.tags }}</td>
         </tr>

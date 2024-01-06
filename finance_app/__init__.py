@@ -21,6 +21,10 @@ def create_app(config_class=Config):
 
     app.register_blueprint(main_bp)
 
+    @app.shell_context_processor
+    def make_shell_context():
+        return {"db": db}
+
     return app
 
 

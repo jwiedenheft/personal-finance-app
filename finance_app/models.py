@@ -1,16 +1,13 @@
-import enum
 from typing import List
 from finance_app import db
-from sqlalchemy import DateTime, Enum, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
 
-class Category(enum.Enum):
-    GOD = 1
-    SAVING = 2
-    SPENDING = 3
-    OTHER = 4
+class Category(db.Model):
+    code: Mapped[str] = mapped_column(String(10), nullable=False, primary_key=True)
+    title: Mapped[str] = mapped_column(String(60), nullable=False, default="")
 
 
 class Income(db.Model):
@@ -33,7 +30,10 @@ class Expense(db.Model):
     title: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     notes: Mapped[str] = mapped_column(String(4000), nullable=False, default="")
     amount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    category: Mapped[Category] = mapped_column(Enum(Category))
+    category_code: Mapped[str] = mapped_column(
+        ForeignKey(f"{Category.__tablename__}.code")
+    )
+    category: Mapped["Category"] = relationship()
     tags: Mapped[List["ExpenseTag"]] = relationship()
 
 
