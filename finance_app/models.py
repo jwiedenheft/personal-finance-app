@@ -11,6 +11,7 @@ from finance_app.utils import int_to_money
 class Category(db.Model):
     code: Mapped[str] = mapped_column(String(10), nullable=False, primary_key=True)
     title: Mapped[str] = mapped_column(String(60), nullable=False, default="")
+    color: Mapped[str] = mapped_column(String(6), default="ffffff", nullable=False)
     expenses: Mapped[List["Expense"]] = relationship()
 
 
