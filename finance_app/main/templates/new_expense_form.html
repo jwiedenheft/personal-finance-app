@@ -1,25 +1,28 @@
+{% extends "layout.html" %}
+{% block content %}
 <h1>Add Expense</h1>
 <form action="" method="post" novalidate>
     {{ form.hidden_tag() }}
     <div>
         {{ form.date.label }}<br>
-        {{ form.date}}
+        {{ form.date(class="form-control")}}
     </div>
     <div>
         {{ form.title.label }}<br>
-        {{ form.title }}
+        {{ form.title(class="form-control") }}
     </div>
     <div>
         {{ form.notes.label }}<br>
-        {{ form.notes }}
+        {{ form.notes(class="form-control") }}
     </div>
     <div>
         {{ form.amount.label }}<br>
-        {{ form.amount }}
+        {{ form.amount(class="form-control") }}
     </div>
     <div>
         {{ form.category.label }}<br>
-        {{ form.category }}
+        {{ form.category(class="form-control") }}
     </div>
-    <p>{{ form.submit() }}</p>
+    <p>{{ form.submit(class="btn btn-primary mt-3") }}</p>
 </form>
+{% endblock %}

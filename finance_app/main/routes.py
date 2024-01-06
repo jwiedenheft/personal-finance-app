@@ -8,7 +8,7 @@ from finance_app.models import Category, Expense
 
 @main.route("/")
 def index():
-    return "Hello world!"
+    return render_template("index.html")
 
 
 @main.route("/new_expense", methods=["GET", "POST"])

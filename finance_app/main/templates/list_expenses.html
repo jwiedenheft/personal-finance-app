@@ -1,13 +1,15 @@
 {% extends "layout.html" %}
 {% block content %}
-<a href="{{url_for('main.new_expense')}}">New Expense</a>
-<table>
+<a class="btn btn-primary" href="{{url_for('main.new_expense')}}">
+    New Expense
+</a>
+<table class="table">
     <tr>
-        <th>Date</th>
-        <th>Title</th>
-        <th>Amount</th>
-        <th>Category</th>
-        <th>Tags</th>
+        <th scope="col">Date</th>
+        <th scope="col">Title</th>
+        <th scope="col">Amount</th>
+        <th scope="col">Category</th>
+        <th scope="col">Tags</th>
     </tr>
     {% for expense in expenses %} 
         <tr>
