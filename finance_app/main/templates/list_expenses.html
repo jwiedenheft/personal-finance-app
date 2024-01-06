@@ -1,0 +1,18 @@
+
+<table>
+    <th>
+        <td>Date</td>
+        <td>Title</td>
+        <td>Amount</td>
+        <td>Category</td>
+        <td>Tags</td>
+    </th>
+    {% for expense in expenses %} 
+        <tr>
+            <td>{{ expense.date }}</td>
+            <td>{{ expense.title }}</td>
+            <td>{{ expense.category }}</td>
+            <td>{{ expense.tags }}</td>
+        </tr>
+    {% endfor %}
+</table>

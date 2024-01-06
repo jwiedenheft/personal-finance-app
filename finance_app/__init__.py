@@ -4,25 +4,15 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 import os
 
+from config import Config
+
 db = SQLAlchemy()
 migrate = Migrate()
 
 
-def create_app(test_config=None):
+def create_app(config_class=Config):
     app = Flask(__name__, instance_relative_config=True)
-    password = ""
-    try:
-        with open("/run/secrets/db-password") as file:
-            password = file.read()
-    except:
-        pass
-
-    if os.environ.get("FLASK_ENV") == "production":
-        app.config[
-            "SQLALCHEMY_DATABASE_URI"
-        ] = f"mysql+pymysql://root:{password}@db/finances"
-    else:
-        app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///"
+    app.config.from_object(config_class)
 
     db.init_app(app)
     migrate.init_app(app, db)
