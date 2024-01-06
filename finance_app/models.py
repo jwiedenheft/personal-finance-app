@@ -1,4 +1,3 @@
-from decimal import Decimal
 from typing import List
 from finance_app import db
 from sqlalchemy import DateTime, ForeignKey, Integer, String

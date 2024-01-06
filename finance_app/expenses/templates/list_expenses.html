@@ -16,7 +16,9 @@
             <td>{{ expense.date.strftime('%d/%m/%y') }}</td>
             <td>{{ expense.title }}</td>
             <td>{{ expense.formatted_amount() }}</td>
-            <td>{{ expense.category.title }}</td>
+            <td style="background: #{{expense.category.color}}">
+                {{ expense.category.title }}
+            </td>
             <td>{{ expense.tag_string() }}</td>
         </tr>
     {% endfor %}
