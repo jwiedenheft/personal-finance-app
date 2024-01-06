@@ -2,7 +2,6 @@ from datetime import datetime
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-import os
 
 from config import Config
 
@@ -18,8 +17,10 @@ def create_app(config_class=Config):
     migrate.init_app(app, db)
 
     from finance_app.main import main as main_bp
+    from finance_app.expenses import expenses as expenses_bp
 
     app.register_blueprint(main_bp)
+    app.register_blueprint(expenses_bp)
 
     @app.shell_context_processor
     def make_shell_context():

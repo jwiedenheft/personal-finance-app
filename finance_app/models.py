@@ -5,10 +5,13 @@ from sqlalchemy import DateTime, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
+from finance_app.utils import int_to_money
+
 
 class Category(db.Model):
     code: Mapped[str] = mapped_column(String(10), nullable=False, primary_key=True)
     title: Mapped[str] = mapped_column(String(60), nullable=False, default="")
+    expenses: Mapped[List["Expense"]] = relationship()
 
 
 class Income(db.Model):
@@ -34,12 +37,11 @@ class Expense(db.Model):
     category_code: Mapped[str] = mapped_column(
         ForeignKey(f"{Category.__tablename__}.code")
     )
-    category: Mapped["Category"] = relationship()
+    category: Mapped["Category"] = relationship(back_populates="expenses")
     tags: Mapped[List["ExpenseTag"]] = relationship()
 
     def formatted_amount(self):
-        money = Decimal(self.amount) / 100
-        return f"-${money}"
+        return f"-{int_to_money(self.amount)}"
 
     def tag_string(self):
         return "; ".join([tag.name for tag in self.tags])

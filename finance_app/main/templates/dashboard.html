@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h2>Expenses by category:</h2>
+<table class="table">
+{% for category in category_expense_totals %}
+<tr>
+    <th scope="row">{{category}}:</th>
+    <td scope="row">{{category_expense_totals[category]}}</td>
+</tr>
+{% endfor %}
+</table>
+{% endblock  %}
