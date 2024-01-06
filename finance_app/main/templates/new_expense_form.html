@@ -1,0 +1,25 @@
+<h1>Add Expense</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.date.label }}<br>
+        {{ form.date}}
+    </div>
+    <div>
+        {{ form.title.label }}<br>
+        {{ form.title }}
+    </div>
+    <div>
+        {{ form.notes.label }}<br>
+        {{ form.notes }}
+    </div>
+    <div>
+        {{ form.amount.label }}<br>
+        {{ form.amount }}
+    </div>
+    <div>
+        {{ form.category.label }}<br>
+        {{ form.category }}
+    </div>
+    <p>{{ form.submit() }}</p>
+</form>

@@ -1,4 +1,6 @@
-
+{% extends "layout.html" %}
+{% block content %}
+<a href="{{url_for('main.new_expense')}}">New Expense</a>
 <table>
     <tr>
         <th>Date</th>
@@ -9,11 +11,12 @@
     </tr>
     {% for expense in expenses %} 
         <tr>
-            <td>{{ expense.date.strftime('%y/%m/%d') }}</td>
+            <td>{{ expense.date.strftime('%d/%m/%y') }}</td>
             <td>{{ expense.title }}</td>
-            <td>{{ expense.amount }}</td>
-            <td>{{ expense.category }}</td>
-            <td>{{ expense.tags }}</td>
+            <td>{{ expense.formatted_amount() }}</td>
+            <td>{{ expense.category.title }}</td>
+            <td>{{ expense.tag_string() }}</td>
         </tr>
     {% endfor %}
 </table>
+{% endblock %}

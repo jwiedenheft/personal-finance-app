@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import List
 from finance_app import db
 from sqlalchemy import DateTime, ForeignKey, Integer, String
@@ -35,6 +36,13 @@ class Expense(db.Model):
     )
     category: Mapped["Category"] = relationship()
     tags: Mapped[List["ExpenseTag"]] = relationship()
+
+    def formatted_amount(self):
+        money = Decimal(self.amount) / 100
+        return f"-${money}"
+
+    def tag_string(self):
+        return "; ".join([tag.name for tag in self.tags])
 
 
 class Tag(db.Model):
