@@ -13,7 +13,9 @@ class Category(db.Model):
     color: Mapped[str] = mapped_column(String(6), default="ffffff", nullable=False)
     expenses: Mapped[List["Expense"]] = relationship()
 
-    category_incomes: Mapped[List["CategoryIncome"]] = relationship()
+    category_incomes: Mapped[List["CategoryIncome"]] = relationship(
+        back_populates="category"
+    )
 
 
 class Income(db.Model):
@@ -26,9 +28,11 @@ class Income(db.Model):
 
     @property
     def total_amount(self):
-        return sum(c.amount for c in self.category_incomes)
+        return sum([c.amount for c in self.category_incomes])
 
-    category_incomes: Mapped[List["CategoryIncome"]] = relationship()
+    category_incomes: Mapped[List["CategoryIncome"]] = relationship(
+        back_populates="income"
+    )
 
 
 class CategoryIncome(db.Model):
@@ -57,7 +61,7 @@ class Expense(db.Model):
         ForeignKey(f"{Category.__tablename__}.code")
     )
     category: Mapped["Category"] = relationship(back_populates="expenses")
-    tags: Mapped[List["ExpenseTag"]] = relationship()
+    tags: Mapped[List["ExpenseTag"]] = relationship(back_populates="expense")
 
     def formatted_amount(self):
         return f"-{int_to_money(self.amount)}"
