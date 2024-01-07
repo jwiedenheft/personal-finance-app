@@ -44,7 +44,8 @@ class Expense(db.Model):
         return f"-{int_to_money(self.amount)}"
 
     def tag_string(self):
-        return "; ".join([tag.name for tag in self.tags])
+        tags = [et.tag.name for et in self.tags]
+        return "; ".join(tags)
 
 
 class Tag(db.Model):
@@ -54,6 +55,9 @@ class Tag(db.Model):
 
 class ExpenseTag(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
     expense_id: Mapped[int] = mapped_column(ForeignKey(f"{Expense.__tablename__}.id"))
+    expense: Mapped["Expense"] = relationship()
+
     tag_id: Mapped[int] = mapped_column(ForeignKey(f"{Tag.__tablename__}.id"))
     tag: Mapped["Tag"] = relationship()
