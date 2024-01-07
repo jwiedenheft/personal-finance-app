@@ -13,6 +13,8 @@ class Category(db.Model):
     color: Mapped[str] = mapped_column(String(6), default="ffffff", nullable=False)
     expenses: Mapped[List["Expense"]] = relationship()
 
+    category_incomes: Mapped[List["CategoryIncome"]] = relationship()
+
 
 class Income(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -21,8 +23,25 @@ class Income(db.Model):
         DateTime, nullable=False, default=datetime.now()
     )
     title: Mapped[str] = mapped_column(String(256), nullable=False, default="")
-    total_amount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    percent_spend: Mapped[int] = mapped_column(Integer, nullable=False, default=80)
+
+    @property
+    def total_amount(self):
+        return sum(c.amount for c in self.category_incomes)
+
+    category_incomes: Mapped[List["CategoryIncome"]] = relationship()
+
+
+class CategoryIncome(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+    income_id: Mapped[int] = mapped_column(ForeignKey(f"{Income.__tablename__}.id"))
+    income: Mapped["Income"] = relationship()
+
+    category_code: Mapped[str] = mapped_column(
+        ForeignKey(f"{Category.__tablename__}.code")
+    )
+    category: Mapped["Category"] = relationship()
+    amount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
 
 class Expense(db.Model):
