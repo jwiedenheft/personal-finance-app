@@ -1,26 +1,47 @@
 {% extends "layout.html" %}
 {% block content %}
-<a class="btn btn-primary" href="{{url_for('expenses.new')}}">
-    New Expense
-</a>
+<div class="float-end">
+    <a class="btn btn-primary" href="{{url_for('expenses.new')}}">
+        New Expense
+    </a>
+</div>
 <table class="table">
     <tr>
         <th scope="col">Date</th>
-        <th scope="col">Title</th>
-        <th scope="col">Amount</th>
-        <th scope="col">Category</th>
-        <th scope="col">Tags</th>
+        <th scope="col" class="text-center">Title</th>
+        <th scope="col" class="text-center">Amount</th>
+        <th scope="col" class="text-center">Category</th>
+        <th scope="col" class="text-center">Tags</th>
+        <th></th>
     </tr>
     {% for expense in expenses %} 
         <tr>
-            <td>{{ expense.date.strftime('%d/%m/%y') }}</td>
-            <td>{{ expense.title }}</td>
-            <td>{{ expense.formatted_amount() }}</td>
-            <td style="background: #{{expense.category.color}}">
+            <td>{{ expense.date.strftime('%m/%d/%y') }}</td>
+            <td class="text-center">{{ expense.title }}</td>
+            <td class="text-center">{{ expense.formatted_amount() }}</td>
+            <td class="text-center" style="background: #{{expense.category.color}}">
                 {{ expense.category.title }}
             </td>
-            <td>{{ expense.tag_string() }}</td>
+            <td class="text-center">{{ expense.tag_string() }}</td>
+            <td class="text-end">
+                <a href='{{url_for("expenses.delete", id=expense.id)}}'>
+                    <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
+                </a>
+            </td>
+
         </tr>
     {% endfor %}
 </table>
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        {% if prev_url %}
+        <a href="{{prev_url}}">< Previous Page</a>
+        {% endif %}
+    </div>
+    <div>
+        {% if next_url %}
+        <a href="{{next_url}}">Next Page ></a>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
