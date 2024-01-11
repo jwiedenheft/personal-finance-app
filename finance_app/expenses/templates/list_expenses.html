@@ -22,7 +22,9 @@
             <td class="text-center" style="background: #{{expense.category.color}}">
                 {{ expense.category.title }}
             </td>
-            <td class="text-center">{{ expense.tag_string() }}</td>
+            <td class="text-center">
+                {{ expense.tag_string() }}
+            </td>
             <td >
                 <a href='{{url_for("expenses.delete", id=expense.id)}}'>
                     <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
@@ -35,12 +37,16 @@
 <div class="d-flex justify-content-between mb-3">
     <div>
         {% if prev_url %}
-        <a href="{{prev_url}}">< Previous Page</a>
+        <a href="{{prev_url}}">
+            < Previous Page
+        </a>
         {% endif %}
     </div>
     <div>
         {% if next_url %}
-        <a href="{{next_url}}">Next Page ></a>
+        <a href="{{next_url}}">
+            Next Page >
+        </a>
         {% endif %}
     </div>
 </div>

@@ -40,7 +40,7 @@
                 </td>
             {% endfor %}
             <td>
-                <a href='{#{{url_for("income.delete", id=income.id)}}#}'>
+                <a href='{{url_for("income.delete", id=income.id)}}'>
                     <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
                 </a>
             </td>

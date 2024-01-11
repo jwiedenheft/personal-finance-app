@@ -49,11 +49,12 @@ def new():
         return redirect(url_for("expenses.list"))
     return render_template("new_expense.html", form=form)
 
+"""
 
-@expenses.route("/delete/<id>")
+
+@income.route("/delete/<id>")
 def delete(id: int):
-    expense = Expense.query.get_or_404(id)
-    db.session.delete(expense)
+    income = Income.query.get_or_404(id)
+    db.session.delete(income)
     db.session.commit()
-    return redirect(url_for("expenses.list"))
- """
+    return redirect(url_for("income.list"))
