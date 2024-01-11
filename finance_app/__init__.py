@@ -17,9 +17,11 @@ def create_app(config_class=Config):
 
     from finance_app.main import main as main_bp
     from finance_app.expenses import expenses as expenses_bp
+    from finance_app.income import income as income_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(expenses_bp)
+    app.register_blueprint(income_bp)
 
     @app.shell_context_processor
     def make_shell_context():

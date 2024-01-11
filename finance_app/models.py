@@ -21,6 +21,11 @@ class Category(db.Model):
 class Income(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
+
+    @property
+    def date_string(self):
+        return self.date.strftime("%m/%d/%y")
+
     create_date: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now()
     )
@@ -30,9 +35,18 @@ class Income(db.Model):
     def total_amount(self):
         return sum([c.amount for c in self.category_incomes])
 
+    def formatted_total_amount(self):
+        return int_to_money(self.total_amount)
+
     category_incomes: Mapped[List["CategoryIncome"]] = relationship(
         back_populates="income"
     )
+
+    def income_for_category(self, category: Category):
+        for ci in self.category_incomes:
+            if ci.category_code == category.code:
+                return ci
+        return None
 
 
 class CategoryIncome(db.Model):
@@ -46,6 +60,9 @@ class CategoryIncome(db.Model):
     )
     category: Mapped["Category"] = relationship()
     amount: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+
+    def formatted_amount(self):
+        return int_to_money(self.amount)
 
 
 class Expense(db.Model):

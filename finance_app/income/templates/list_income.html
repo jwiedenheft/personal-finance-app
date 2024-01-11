@@ -1,0 +1,66 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="float-end">
+    {#
+        <a class="btn btn-primary" href="{{url_for('expenses.new')}}">
+            New Expense
+        </a>
+    #}
+</div>
+<table class="table">
+    <style>
+        {% for category in categories %}
+            th:nth-child({{loop.index + 3}}), td:nth-child({{loop.index + 3}}) {
+                background: #{{category.color}};
+            }
+        {% endfor %}
+    </style>
+    <tr>
+        <th scope="col">Date</th>
+        <th scope="col" class="text-center">Title</th>
+        <th scope="col" class="text-center">Total Amount</th>
+        {% for category in categories %}
+            <th scope="col" class="text-center" style="background: #{{ category.color }}">
+                {{ category.title }}
+            </th>
+        {% endfor %}
+        <th></th>
+    </tr>
+    {% for income in income_items %} 
+        <tr>
+            <td>{{ income.date_string }}</td>
+            <td class="text-center">{{ income.title }}</td>
+            <td class="text-center">{{ income.formatted_total_amount() }}</td>
+            {% for category in categories %}
+                {% set ci = income.income_for_category(category) %}
+                <th scope="col" class="text-center">
+                {% if ci %}
+                    {{ ci.formatted_amount() }}
+                {% else %}
+                $0.0
+                {% endif %}
+                </th>
+            {% endfor %}
+            <td class="text-end">
+                {#
+                    <a href='{{url_for("expenses.delete", id=expense.id)}}'>
+                        <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
+                    </a>
+                #}
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+<div class="d-flex justify-content-between mb-3">
+    <div>
+        {% if prev_url %}
+        <a href="{{prev_url}}">< Previous Page</a>
+        {% endif %}
+    </div>
+    <div>
+        {% if next_url %}
+        <a href="{{next_url}}">Next Page ></a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
