@@ -1,7 +1,6 @@
 from flask import render_template
 from finance_app.main import main
 from finance_app.models import Category
-from finance_app.utils import int_to_money
 
 
 @main.route("/")

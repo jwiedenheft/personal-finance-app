@@ -1,6 +1,5 @@
 from flask import current_app, redirect, render_template, url_for, request
-from finance_app.models import Category, Expense, Income
-from .forms.income_form import IncomeForm
+from finance_app.models import Category, Income
 from finance_app import db
 from . import income
 
