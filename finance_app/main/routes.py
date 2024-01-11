@@ -17,15 +17,4 @@ def list_categories():
 
 @main.route("/dashboard")
 def dashboard():
-    exepenses_by_category = {}
-    categories = Category.query.all()
-
-    category: Category
-    for category in categories:
-        expenses = category.expenses
-        total = sum([e.amount for e in expenses])
-        exepenses_by_category[category.title] = int_to_money(total)
-
-    return render_template(
-        "dashboard.html", category_expense_totals=exepenses_by_category
-    )
+    return render_template("dashboard.html", categories=Category.query.all())

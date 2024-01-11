@@ -1,6 +1,6 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="float-end">
+<div class="float-end mb-3">
     <a class="btn btn-primary" href="{{url_for('expenses.new')}}">
         New Expense
     </a>
@@ -23,7 +23,7 @@
                 {{ expense.category.title }}
             </td>
             <td class="text-center">{{ expense.tag_string() }}</td>
-            <td class="text-end">
+            <td >
                 <a href='{{url_for("expenses.delete", id=expense.id)}}'>
                     <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
                 </a>

@@ -1,12 +1,47 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<h2>Category Balances:</h2>
+<table class="table">
+    {% for category in categories %}
+    <tr>
+        <th scope="row" style="background-color: #{{category.color}}">
+            {{ category.title }}:
+        </th>
+        {% set balance = category.balance %}
+        <td scope="row" style="
+        {% if balance >= 0 %}
+        background-color: #C6EFCE;
+        color: #006100;
+        {% else %}
+        background-color: #FFC7CE;
+        color: #9C0006;
+        {% endif %}
+        ">
+            {{ category.balance | int_to_money }}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 <h2>Expenses by category:</h2>
 <table class="table">
-{% for category in category_expense_totals %}
+{% for category in categories %}
 <tr>
-    <th scope="row">{{category}}:</th>
-    <td scope="row">{{category_expense_totals[category]}}</td>
+    <th scope="row" style="background-color: #{{category.color}}">
+        {{ category.title }}:
+    </th>
+    <td scope="row">-{{ category.expenses_total | int_to_money }}</td>
+</tr>
+{% endfor %}
+</table>
+<h2>Income by category:</h2>
+<table class="table">
+{% for category in categories %}
+<tr>
+    <th scope="row" style="background-color: #{{category.color}}">
+        {{ category.title }}:
+    </th>
+    <td scope="row">{{ category.income_total | int_to_money }}</td>
 </tr>
 {% endfor %}
 </table>

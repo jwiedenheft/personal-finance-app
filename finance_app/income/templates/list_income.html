@@ -1,16 +1,14 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="float-end">
-    {#
-        <a class="btn btn-primary" href="{{url_for('expenses.new')}}">
-            New Expense
-        </a>
-    #}
+<div class="float-end mb-3">
+    <a class="btn btn-primary" href="#{#{{url_for('expenses.new')}}#}">
+        New Income
+    </a>
 </div>
 <table class="table">
     <style>
         {% for category in categories %}
-            th:nth-child({{loop.index + 3}}), td:nth-child({{loop.index + 3}}) {
+            td:nth-child({{loop.index + 3}}) {
                 background: #{{category.color}};
             }
         {% endfor %}
@@ -33,20 +31,18 @@
             <td class="text-center">{{ income.formatted_total_amount() }}</td>
             {% for category in categories %}
                 {% set ci = income.income_for_category(category) %}
-                <th scope="col" class="text-center">
+                <td scope="col" class="text-center">
                 {% if ci %}
                     {{ ci.formatted_amount() }}
                 {% else %}
                 $0.0
                 {% endif %}
-                </th>
+                </td>
             {% endfor %}
-            <td class="text-end">
-                {#
-                    <a href='{{url_for("expenses.delete", id=expense.id)}}'>
-                        <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
-                    </a>
-                #}
+            <td>
+                <a href='{#{{url_for("income.delete", id=income.id)}}#}'>
+                    <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
+                </a>
             </td>
         </tr>
     {% endfor %}

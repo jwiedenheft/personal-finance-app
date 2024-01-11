@@ -27,6 +27,10 @@ def create_app(config_class=Config):
     def make_shell_context():
         return {"db": db}
 
+    @app.template_filter("int_to_money")
+    def int_to_money(cents: int):  # noqa: F811
+        return "$" + str(cents / 100)
+
     return app
 
 

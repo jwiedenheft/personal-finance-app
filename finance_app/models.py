@@ -17,6 +17,18 @@ class Category(db.Model):
         back_populates="category"
     )
 
+    @property
+    def expenses_total(self):
+        return sum([e.amount for e in self.expenses])
+
+    @property
+    def income_total(self):
+        return sum([ci.amount for ci in self.category_incomes])
+
+    @property
+    def balance(self):
+        return self.income_total - self.expenses_total
+
 
 class Income(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
