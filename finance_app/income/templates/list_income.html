@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="float-end mb-3">
-    <a class="btn btn-primary" href="#{#{{url_for('expenses.new')}}#}">
+    <a class="btn btn-primary" href="#{#{{url_for('income.new')}}#}">
         New Income
     </a>
 </div>
@@ -18,7 +18,10 @@
         <th scope="col" class="text-center">Title</th>
         <th scope="col" class="text-center">Total Amount</th>
         {% for category in categories %}
-            <th scope="col" class="text-center" style="background: #{{ category.color }}">
+            <th 
+                scope="col" 
+                class="text-center" 
+                style="background: #{{ category.color }}">
                 {{ category.title }}
             </th>
         {% endfor %}
@@ -41,7 +44,10 @@
             {% endfor %}
             <td>
                 <a href='{{url_for("income.delete", id=income.id)}}'>
-                    <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete" />
+                    <img 
+                        src="{{ url_for('static', filename='delete.svg') }}" 
+                        alt="Delete" 
+                    />
                 </a>
             </td>
         </tr>
