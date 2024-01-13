@@ -3,6 +3,7 @@ import csv
 from finance_app import db
 import datetime
 from decimal import Decimal
+import secrets
 
 
 with open("expenses.csv") as file:
@@ -29,7 +30,7 @@ with open("expenses.csv") as file:
         for tag_string in tags_string.split(","):
             tag = Tag.query.where(Tag.name == tag_string).first()
             if tag is None:
-                tag = Tag(name=tag_string)
+                tag = Tag(name=tag_string, color=secrets.token_hex(3))
                 db.session.add(tag)
             expense_tag = ExpenseTag(expense=expense, tag=tag)
             expense.tags.append(expense_tag)

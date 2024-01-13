@@ -103,6 +103,9 @@ class Expense(db.Model):
 class Tag(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     name: Mapped[str] = mapped_column(String(20), nullable=False)
+    color: Mapped[str] = mapped_column(
+        String(6), server_default="6C757D", nullable=False
+    )
 
 
 class ExpenseTag(db.Model):
