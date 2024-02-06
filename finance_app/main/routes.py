@@ -1,11 +1,11 @@
-from flask import render_template
+from flask import redirect, render_template, url_for
 from finance_app.main import main
 from finance_app.models import Category
 
 
 @main.route("/")
 def index():
-    return render_template("index.html")
+    return redirect(url_for("main.dashboard"))
 
 
 @main.route("/list_categories")
