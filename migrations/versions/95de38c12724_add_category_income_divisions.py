@@ -1,17 +1,18 @@
 """Add category income divisions
 
 Revision ID: 95de38c12724
-Revises: 43a52d5221fb
+Revises: 2bb9415ce46c
 Create Date: 2024-01-07 18:08:31.274075
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
 revision = "95de38c12724"
-down_revision = "43a52d5221fb"
+down_revision = "2bb9415ce46c"
 branch_labels = None
 depends_on = None
 

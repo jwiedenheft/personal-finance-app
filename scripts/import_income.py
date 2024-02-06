@@ -1,5 +1,5 @@
 from finance_app.models import (
-    CategoryIncome,
+    IncomeAssignment,
     Category,
     Income,
 )
@@ -30,7 +30,7 @@ with open("income.csv") as file:
             amount = Decimal(amount_string)
             amount_cents = int(amount * 100)
 
-            ci = CategoryIncome(income=income, category=category, amount=amount_cents)
+            ci = IncomeAssignment(income=income, category=category, amount=amount_cents)
             income.category_incomes.append(ci)
 
         db.session.add(income)

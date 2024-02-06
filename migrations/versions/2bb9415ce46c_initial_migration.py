@@ -5,6 +5,7 @@ Revises:
 Create Date: 2024-01-05 21:32:59.818221
 
 """
+
 from alembic import op
 import sqlalchemy as sa
 
@@ -22,15 +23,18 @@ def upgrade():
         "category",
         sa.Column("code", sa.String(length=10), nullable=False),
         sa.Column("title", sa.String(length=60), nullable=False),
+        sa.Column(
+            "color", sa.String(length=6), nullable=False, server_default="ffffff"
+        ),
         sa.PrimaryKeyConstraint("code"),
     )
     op.bulk_insert(
         category_table,
         [
-            {"code": "GOD", "title": "God"},
-            {"code": "SAVING", "title": "Save"},
-            {"code": "SPENDING", "title": "Spend"},
-            {"code": "OTHER", "title": "Other"},
+            {"code": "GOD", "title": "God", "color": "8FAADC"},
+            {"code": "SAVING", "title": "Save", "color": "FFE699"},
+            {"code": "SPENDING", "title": "Spend", "color": "F4B183"},
+            {"code": "OTHER", "title": "Other", "color": "ffffff"},
         ],
     )
     op.create_table(

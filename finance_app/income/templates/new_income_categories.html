@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+{% for form in form.categories %}
+    {{ form.hidden_tag() }}
+    {# Flask-WTF needs `hidden_tag()` so CSRF works for each form #}
+    <div>
+        {{ form.percentage.label }}
+        {{ form.percentage(class="form-control") }}
+    </div>
+{% endfor %}
+{% endblock %}

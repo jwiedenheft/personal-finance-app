@@ -1,5 +1,7 @@
 from flask import current_app, redirect, render_template, url_for, request
-from finance_app.models import Category, Income
+from finance_app.income.forms.income_categories_form import CategoryIncomesForm
+from finance_app.income.forms.income_form import IncomeForm
+from finance_app.models import Category, CategoryIncome, Expense, Income
 from finance_app import db
 from . import income
 
@@ -29,26 +31,91 @@ def list():
     )
 
 
-""" @income.route("/new", methods=["GET", "POST"])
+@income.route("/new", methods=["GET", "POST"])
 def new():
-    form = ExpenseForm()
-    form.category.choices = [(cat.code, cat.title) for cat in Category.query.all()]
+    form = IncomeForm()
+    form.type.choices += [
+        (f"only-{cat.code}", f"Single-Category: {cat.code}")
+        for cat in Category.query.all()
+    ]
     if form.validate_on_submit():
-        category = Category.query.get(form.category.data)
-        expense = Expense(
+        total = int(form.amount.data * 100)
+        income = Income(
             date=form.date.data,
             title=form.title.data,
             notes=form.notes.data,
-            amount=int(form.amount.data * 100),
-            category=category,
         )
-        db.session.add(expense)
+
+        if form.type.data == "standard":
+            god_amount = int(total / 10)
+            save_amount = int(total * 0.8)
+            spend_amount = total - (god_amount + save_amount)
+            income.category_incomes.append(
+                CategoryIncome(category=Category.query.get("GOD"), amount=god_amount)
+            )
+            income.category_incomes.append(
+                CategoryIncome(
+                    category=Category.query.get("SAVING"), amount=save_amount
+                )
+            )
+            income.category_incomes.append(
+                CategoryIncome(
+                    category=Category.query.get("SPENDING"), amount=spend_amount
+                )
+            )
+        elif form.type.data == "paycheck":
+            rent_amount = 350 * 100
+            insurance_amount = int(43.84 * 100)
+            retirement_amount = int(106.60 * 100)
+            full_total = total + rent_amount + insurance_amount + retirement_amount
+            god_amount = int(full_total / 10)
+            save_amount = int(full_total * 0.8)
+            spend_amount = full_total - (god_amount + save_amount)
+            income.category_incomes.append(
+                CategoryIncome(category=Category.query.get("GOD"), amount=god_amount)
+            )
+            income.category_incomes.append(
+                CategoryIncome(
+                    category=Category.query.get("SAVING"), amount=save_amount
+                )
+            )
+            income.category_incomes.append(
+                CategoryIncome(
+                    category=Category.query.get("SPENDING"), amount=spend_amount
+                )
+            )
+            db.session.add(
+                Expense(
+                    title="Rent",
+                    date=form.date.data,
+                    category=Category.query.get("SAVING"),
+                    # tags="Life; Housing",
+                    amount=rent_amount,
+                )
+            )
+            db.session.add(
+                Expense(
+                    title="Health Insurance",
+                    date=form.date.data,
+                    category=Category.query.get("SAVING"),
+                    # tags="Life;Insurance",
+                    amount=insurance_amount,
+                )
+            )
+            db.session.add(
+                Expense(
+                    title="Retirement Investment",
+                    date=form.date.data,
+                    category=Category.query.get("SAVING"),
+                    # tags="Life;Investment",
+                    amount=retirement_amount,
+                )
+            )
+        db.session.add(income)
         db.session.commit()
 
-        return redirect(url_for("expenses.list"))
-    return render_template("new_expense.html", form=form)
-
-"""
+        return redirect(url_for("income.list"))
+    return render_template("new_income.html", form=form)
 
 
 @income.route("/delete/<id>")

@@ -1,11 +1,21 @@
-from flask import current_app, redirect, render_template, url_for, request
+from io import StringIO
+from flask import (
+    Response,
+    current_app,
+    redirect,
+    render_template,
+    url_for,
+    request,
+)
 from finance_app.models import Category, Expense
+from finance_app.utils import int_to_money
 from .forms.expense_form import ExpenseForm
 from finance_app import db
 from . import expenses
+import csv
 
 
-@expenses.route("/list/")
+@expenses.route("/")
 def list():
     page = request.args.get("page", 1, type=int)
     items_per_page = current_app.config.get("RESULTS_PER_PAGE") or 10
@@ -54,3 +64,25 @@ def delete(id: int):
     db.session.delete(expense)
     db.session.commit()
     return redirect(url_for("expenses.list"))
+
+
+@expenses.route("/export")
+def export_expenses():
+    expenses: list[Expense] = Expense.query.all()
+    csv_rows = [
+        {
+            "Date": expense.date.strftime("%m/%d/%Y"),
+            "Title": expense.title,
+            "Category": expense.category.title,
+            "Amount": "-" + int_to_money(expense.amount),
+            "Tags": ",".join([et.tag.name for et in expense.tags]),
+        }
+        for expense in expenses
+    ]
+    with StringIO() as file:
+        csv_writer = csv.writer(file)
+        csv_writer.writerows(csv_rows)
+        return Response(file, mimetype="text/csv")
+    # send_file(
+    #        file, download_name="expenses.csv", , as_attachment=True
+    #    )

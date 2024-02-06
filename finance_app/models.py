@@ -1,6 +1,6 @@
 from typing import List
 from finance_app import db
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String, text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
@@ -13,9 +13,16 @@ class Category(db.Model):
     color: Mapped[str] = mapped_column(String(6), default="ffffff", nullable=False)
     expenses: Mapped[List["Expense"]] = relationship()
 
+    default_income_percent: Mapped[int] = mapped_column(
+        Integer(), nullable=False, server_default=text("0")
+    )
+
     category_incomes: Mapped[List["CategoryIncome"]] = relationship(
         back_populates="category"
     )
+
+    def balance(self):
+        return self.income_total - self.expenses_total
 
     @property
     def expenses_total(self):
@@ -25,23 +32,23 @@ class Category(db.Model):
     def income_total(self):
         return sum([ci.amount for ci in self.category_incomes])
 
-    @property
-    def balance(self):
-        return self.income_total - self.expenses_total
-
 
 class Income(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
+
+    title: Mapped[str] = mapped_column(String(256), nullable=False, default="")
+
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
 
     @property
     def date_string(self):
         return self.date.strftime("%m/%d/%y")
 
+    notes: Mapped[str] = mapped_column(String(4000), nullable=False, default="")
+
     create_date: Mapped[datetime] = mapped_column(
         DateTime, nullable=False, default=datetime.now()
     )
-    title: Mapped[str] = mapped_column(String(256), nullable=False, default="")
 
     @property
     def total_amount(self):
@@ -51,7 +58,7 @@ class Income(db.Model):
         return int_to_money(self.total_amount)
 
     category_incomes: Mapped[List["CategoryIncome"]] = relationship(
-        back_populates="income"
+        back_populates="income", cascade="all, delete-orphan"
     )
 
     def income_for_category(self, category: Category):
