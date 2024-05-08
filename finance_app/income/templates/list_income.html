@@ -6,17 +6,10 @@
     </a>
 </div>
 <table class="table">
-    <style>
-        {% for category in categories %}
-            td:nth-child({{loop.index + 3}}) {
-                background: #{{category.color}};
-            }
-        {% endfor %}
-    </style>
     <tr>
         <th scope="col">Date</th>
         <th scope="col" class="text-center">Title</th>
-        <th scope="col" class="text-center">Total Amount</th>
+        <th scope="col" class="text-center">Amount</th>
         {% for category in categories %}
             <th 
                 scope="col" 
