@@ -2,7 +2,6 @@ import os
 import click
 from flask import Blueprint
 from finance_app.models import (
-    IncomeAssignment,
     Expense,
     Category,
     ExpenseTag,
@@ -32,7 +31,6 @@ def import_income(file_path):
             title = row["Title"]
             date = datetime.datetime.strptime(row["Date"], "%m/%d/%Y")
             print(f"{title} - {date}")
-            income = Income(date=date, title=title)
             for category_name in ["God", "Save", "Spend"]:
                 category = Category.query.where(Category.title == category_name).first()
                 if category is None:
@@ -49,14 +47,10 @@ def import_income(file_path):
                 amount = Decimal(amount_string)
                 amount_cents = int(amount * 100)
 
-                ci = IncomeAssignment(
-                    income=income, category=category, amount=amount_cents
+                income = Income(
+                    title=title, category=category, amount=amount_cents, date=date
                 )
-                income.category_incomes.append(ci)
-
-            db.session.add(income)
-
-        # print(sum(i.total_amount for i in Income.query.all()))
+                db.session.add(income)
 
         db.session.commit()
 
@@ -81,9 +75,14 @@ def import_expenses(file_path):
                 print(f"Could not find category with name {category_name} for {title}!")
                 continue
             amount_string = row["Amount"]
-            amount_string = amount_string.removeprefix("-$")
+            amount_string = amount_string.replace("$", "")
+            amount_string = amount_string.removeprefix("-")
             amount_string = amount_string.replace(",", "")
-            amount = Decimal(amount_string)
+            if amount_string == "":
+                amount = 0
+            else:
+                print(amount_string)
+                amount = Decimal(amount_string)
             amount_cents = int(amount * 100)
             expense = Expense(
                 date=date, title=title, amount=amount_cents, category=category

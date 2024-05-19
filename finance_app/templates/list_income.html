@@ -1,7 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="float-end mb-3">
-    <a class="btn btn-primary" href="{{url_for('income.new')}}">
+    <a class="btn btn-primary" href="{{url_for('income.new_paycheck')}}">
+        Add Paycheck
+    </a>
+    <a class="btn btn-primary" href="{{url_for('income.new_income')}}">
         New Income
     </a>
 </div>
@@ -9,34 +12,20 @@
     <tr>
         <th scope="col">Date</th>
         <th scope="col" class="text-center">Title</th>
+        <th scope="col" class="text-center">
+            Category
+        </th>
         <th scope="col" class="text-center">Amount</th>
-        {% for category in categories %}
-            <th 
-                scope="col" 
-                class="text-center" 
-                style="background: #{{ category.color }}">
-                {{ category.title }}
-            </th>
-        {% endfor %}
         <th></th>
     </tr>
     {% for income in income_items %} 
         <tr>
             <td>{{ income.date_string }}</td>
             <td class="text-center">{{ income.title }}</td>
-            <td class="text-center">{{ income.formatted_total_amount() }}</td>
-            {% for category in categories %}
-                {% set ci = income.income_for_category(category) %}
-                <td scope="col" class="text-center">
-                {% if ci %}
-                    {{ ci.formatted_amount() }}
-                {% else %}
-                $0.0
-                {% endif %}
-                </td>
-            {% endfor %}
+            <td class="text-center" style="background: #{{income.category.color}}">{{ income.category.title }}</td>
+            <td class="text-center">{{ income.formatted_amount() }}</td>
             <td>
-                <a href='{{url_for("income.delete", id=income.id)}}'>
+                <a href='{{url_for("income.delete_income", id=income.id)}}'>
                     <img 
                         src="{{ url_for('static', filename='delete.svg') }}" 
                         alt="Delete" 

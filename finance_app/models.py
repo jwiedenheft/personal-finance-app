@@ -50,7 +50,7 @@ class Income(db.Model):
     )
 
     category_code: Mapped[str] = mapped_column(
-        ForeignKey(f"{Category.__tablename__}.code")
+        ForeignKey(f"{Category.__tablename__}.code"), nullable=False
     )
     category: Mapped["Category"] = relationship(back_populates="income")
 

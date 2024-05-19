@@ -1,11 +1,13 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-
+from flask_login import LoginManager
+from finance_app.login import setup_login
 from config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
+login = LoginManager()
 
 
 def create_app(config_class=Config):
@@ -14,10 +16,12 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    login.init_app(app)
+    setup_login(app, login)
 
-    from finance_app.main import main as main_bp
-    from finance_app.expenses import expenses as expenses_bp
-    from finance_app.income import income as income_bp
+    from finance_app.routes import main as main_bp
+    from finance_app.routes import expenses as expenses_bp
+    from finance_app.routes import income as income_bp
 
     app.register_blueprint(main_bp)
     app.register_blueprint(expenses_bp)

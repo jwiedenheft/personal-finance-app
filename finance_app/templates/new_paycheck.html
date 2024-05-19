@@ -1,0 +1,24 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Add Paycheck</h1>
+<form method="post" >
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.title.label }}<br>
+        {{ form.title(class="form-control",disabled=true) }}
+    </div>
+    <div>
+        {{ form.date.label }}<br>
+        {{ form.date(class="form-control")}}
+    </div>
+    <div>
+        {{ form.amount.label }}<br>
+        {{ form.amount(class="form-control") }}
+    </div>
+    <div>
+        {{ form.notes.label }}<br>
+        {{ form.notes(class="form-control") }}
+    </div>
+    <p>{{ form.submit(class="btn btn-primary mt-3") }}</p>
+</form>
+{% endblock %}
