@@ -1,3 +1,4 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -13,6 +14,9 @@ login = LoginManager()
 
 
 def create_app(config_class=Config):
+    if not os.path.exists("logs"):
+        os.mkdir("logs")
+
     logging.basicConfig(filename="logs/finance_app.log", level=logging.INFO)
 
     app = Flask(__name__, instance_relative_config=True)
