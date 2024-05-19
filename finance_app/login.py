@@ -1,5 +1,5 @@
 from flask import Flask, redirect, render_template, request, url_for
-from flask_login import UserMixin, login_user, logout_user
+from flask_login import LoginManager, UserMixin, login_user, logout_user
 import os
 
 
@@ -13,9 +13,9 @@ class User(UserMixin):
 users = {"main": User("main")}
 
 
-def setup_login(app: Flask, login):
+def setup_login(app: Flask, login_manager: LoginManager):
 
-    @login.user_loader
+    @login_manager.user_loader
     def load_user(user_id):
         return users[user_id]
 
@@ -29,7 +29,7 @@ def setup_login(app: Flask, login):
             app.logger.info("Incorrect password or no password!")
             return render_template("login.html")
 
-    login.login_view = "login"
+    login_manager.login_view = "login"
 
     @app.route("/logout")
     def logout():
