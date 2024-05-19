@@ -29,6 +29,8 @@ def setup_login(app: Flask, login):
             app.logger.info("Incorrect password or no password!")
             return render_template("login.html")
 
+    login.login_view = "login"
+
     @app.route("/logout")
     def logout():
         logout_user()
