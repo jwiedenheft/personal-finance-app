@@ -3,6 +3,8 @@ password.txt
 .flaskenv
 *.db
 *.csv
+web_config
+logs
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

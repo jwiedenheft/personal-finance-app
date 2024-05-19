@@ -4,6 +4,8 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from finance_app.login import setup_login
 from config import Config
+import logging
+
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -11,6 +13,8 @@ login = LoginManager()
 
 
 def create_app(config_class=Config):
+    logging.basicConfig(filename="logs/finance_app.log", level=logging.INFO)
+
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(config_class)
 
