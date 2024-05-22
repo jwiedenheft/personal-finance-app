@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="float-end mb-3">
+    <a class="btn btn-secondary" href="{{url_for('expenses.export_expenses')}}">
+        Export
+    </a>
     <a class="btn btn-primary" href="{{url_for('expenses.new_expense')}}" autofocus>
         New Expense
     </a>

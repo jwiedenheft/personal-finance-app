@@ -1,11 +1,9 @@
-import csv
-from io import StringIO
 from flask import (
     Blueprint,
-    Response,
     current_app,
     redirect,
     render_template,
+    send_file,
     url_for,
     request,
 )
@@ -13,7 +11,7 @@ from finance_app.forms.expense_form import ExpenseForm
 from finance_app.forms.income_form import IncomeForm
 from finance_app.models import Category, Expense, Income
 from finance_app import db
-from finance_app.utils import int_to_money
+from finance_app.utils import int_to_money, make_csv_file
 from flask_login import login_required
 
 
@@ -146,6 +144,31 @@ def delete_income(id: int):
     return redirect(url_for("income.list_income"))
 
 
+@income.route("/export")
+@login_required
+def export_income():
+    income: list[Income] = Income.query.all()
+    if len(income) < 1:
+        return "No income to download!"
+
+    csv_rows = [
+        {
+            "Title": i.title,
+            "Date": i.date.strftime("%m/%d/%Y"),
+            "Amount": int_to_money(i.amount),
+            "Category": i.category.title,
+        }
+        for i in income
+    ]
+
+    # Return file to user
+    return send_file(
+        make_csv_file(csv_rows),
+        mimetype="text/csv",
+        download_name="income.csv",
+    )
+
+
 expenses = Blueprint(
     "expenses", __name__, url_prefix="/expenses", template_folder="templates"
 )
@@ -209,6 +232,9 @@ def delete_expense(id: int):
 @login_required
 def export_expenses():
     expenses: list[Expense] = Expense.query.all()  # noqa: F821
+    if len(expenses) < 1:
+        return "No expenses to download!"
+
     csv_rows = [
         {
             "Date": expense.date.strftime("%m/%d/%Y"),
@@ -219,10 +245,10 @@ def export_expenses():
         }
         for expense in expenses
     ]
-    with StringIO() as file:
-        csv_writer = csv.writer(file)
-        csv_writer.writerows(csv_rows)
-        return Response(file, mimetype="text/csv")
-    # send_file(
-    #        file, download_name="expenses.csv", , as_attachment=True
-    #    )
+
+    # Return file to user
+    return send_file(
+        make_csv_file(csv_rows),
+        mimetype="text/csv",
+        download_name="expenses.csv",
+    )

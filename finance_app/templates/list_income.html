@@ -1,6 +1,9 @@
 {% extends "layout.html" %}
 {% block content %}
 <div class="float-end mb-3">
+    <a class="btn btn-secondary" href="{{url_for('income.export_income')}}">
+        Export
+    </a>
     <a class="btn btn-primary" href="{{url_for('income.new_paycheck')}}">
         Add Paycheck
     </a>
