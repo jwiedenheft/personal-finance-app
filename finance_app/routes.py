@@ -48,9 +48,10 @@ def list_income():
     page = request.args.get("page", 1, type=int)
     items_per_page = current_app.config.get("RESULTS_PER_PAGE") or 10
 
-    income = Income.query.order_by(Income.date.desc()).paginate(
-        page=page, per_page=items_per_page
-    )
+    income = Income.query.order_by(
+        Income.date.desc(),
+        Income.create_date.desc(),
+    ).paginate(page=page, per_page=items_per_page)
 
     next_url = None
     if income.has_next:
@@ -179,9 +180,10 @@ expenses = Blueprint(
 def list_expenses():
     page = request.args.get("page", 1, type=int)
     items_per_page = current_app.config.get("RESULTS_PER_PAGE") or 10
-    expenses = Expense.query.order_by(Expense.date.desc()).paginate(
-        page=page, per_page=items_per_page
-    )
+    expenses = Expense.query.order_by(
+        Expense.date.desc(),
+        Expense.create_date.desc(),
+    ).paginate(page=page, per_page=items_per_page)
 
     next_url = None
     if expenses.has_next:
