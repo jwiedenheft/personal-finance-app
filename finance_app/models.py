@@ -46,7 +46,7 @@ class Income(db.Model):
     notes: Mapped[str] = mapped_column(String(4000), nullable=False, default="")
 
     create_date: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now()
+        DateTime, nullable=False, default=datetime.now
     )
 
     category_code: Mapped[str] = mapped_column(
@@ -59,7 +59,7 @@ class Expense(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     date: Mapped[datetime] = mapped_column(DateTime, nullable=False)
     create_date: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, default=datetime.now()
+        DateTime, nullable=False, default=datetime.now
     )
     title: Mapped[str] = mapped_column(String(256), nullable=False, default="")
     notes: Mapped[str] = mapped_column(String(4000), nullable=False, default="")
