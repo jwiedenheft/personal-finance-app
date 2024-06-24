@@ -7,9 +7,10 @@ from flask import (
     url_for,
     request,
 )
+from sqlalchemy import select
 from finance_app.forms.expense_form import ExpenseForm
 from finance_app.forms.income_form import IncomeForm
-from finance_app.models import Category, Expense, Income
+from finance_app.models import Category, Expense, ExpenseTag, Income, Tag
 from finance_app import db
 from finance_app.utils import int_to_money, make_csv_file
 from flask_login import login_required
@@ -203,7 +204,7 @@ def list_expenses():
 @expenses.route("/new", methods=["GET", "POST"])
 @login_required
 def new_expense():
-    form = ExpenseForm()
+    form: ExpenseForm = ExpenseForm()
     form.category.choices = [(cat.code, cat.title) for cat in Category.query.all()]
     if form.validate_on_submit():
         category = Category.query.get(form.category.data)
@@ -214,6 +215,10 @@ def new_expense():
             amount=int(form.amount.data * 100),
             category=category,
         )
+        if form.tags.data:
+            for tag in form.tags.data.split(";"):
+                tag = Tag.query.get(tag) or Tag(name=tag)
+                expense.tags.append(ExpenseTag(tag=tag))
         db.session.add(expense)
         db.session.commit()
 
@@ -232,6 +237,7 @@ def expense(id: int):
         form.date.data = expense.date
         form.title.data = expense.title
         form.category.data = expense.category_code
+        form.tags.data = expense.tag_string()
     elif form.validate_on_submit():
         category = Category.query.get(form.category.data)
         expense.date = form.date.data
@@ -239,7 +245,16 @@ def expense(id: int):
         expense.notes = form.notes.data
         expense.amount = int(form.amount.data * 100)
         expense.category = category
+        if form.tags.data:
+            for tag in expense.tags:
+                db.session.delete(tag)
+            for tag in form.tags.data.split(";"):
+                if not tag:
+                    continue
+                tag = Tag.query.where(Tag.name == tag).first() or Tag(name=tag)
+                db.session.add(ExpenseTag(tag=tag, expense=expense))
         db.session.commit()
+
         return redirect(url_for("expenses.list_expenses"))
     return render_template(
         "expense_form.html",

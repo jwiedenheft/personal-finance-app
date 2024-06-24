@@ -3,26 +3,30 @@
 <h1>Add Expense</h1>
 <form method="post" novalidate>
     {{ form.hidden_tag() }}
-    <div>
+    <div class="mb-2">
         {{ form.date.label }}<br>
         {{ form.date(class="form-control", autofocus=True)}}
     </div>
-    <div>
+    <div class="mb-2">
         {{ form.title.label }}<br>
         {{ form.title(class="form-control") }}
     </div>
-    <div>
+    <div class="mb-2">
         {{ form.amount.label }}<br>
         {{ form.amount(class="form-control") }}
     </div>
-    <div>
+    <div class="mb-2">
         {{ form.category.label }}<br>
         {{ form.category(class="form-control") }}
     </div>
     <p>{{ form.submit(class="btn btn-primary mt-3") }}</p>
-    <div>
+    <div class="mb-2">
         {{ form.notes.label }}<br>
         {{ form.notes(class="form-control") }}
+    </div>
+    <div class="mb-2">
+        {{ form.tags.label }}<br>
+        {{ form.tags(class="form-control") }}
     </div>
 </form>
 {% endblock %}

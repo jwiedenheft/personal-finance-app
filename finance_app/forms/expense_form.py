@@ -16,4 +16,5 @@ class ExpenseForm(FlaskForm):
     notes = TextAreaField("Notes:")
     amount = DecimalField("Amount:", default=0, validators=[DataRequired()])
     category = SelectField("Category:")
+    tags = StringField("Tags (seperate with semicolons):")
     submit = SubmitField("Submit")

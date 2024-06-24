@@ -77,14 +77,17 @@ class Expense(db.Model):
         ForeignKey(f"{Category.__tablename__}.code")
     )
     category: Mapped["Category"] = relationship(back_populates="expenses")
-    tags: Mapped[List["ExpenseTag"]] = relationship(back_populates="expense")
+    tags: Mapped[List["ExpenseTag"]] = relationship(
+        back_populates="expense",
+        cascade="delete",
+    )
 
     def formatted_amount(self):
         return f"-{int_to_money(self.amount)}"
 
     def tag_string(self):
         tags = [et.tag.name for et in self.tags]
-        return "; ".join(tags)
+        return ";".join(tags)
 
 
 class Tag(db.Model):
