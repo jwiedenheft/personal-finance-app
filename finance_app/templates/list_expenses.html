@@ -1,53 +1,59 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="float-end mb-3 btn-group">
-    <a class="btn btn-secondary" href="{{url_for('expenses.export_expenses')}}">
-        Export
-    </a>
-    <a class="btn btn-primary" href="{{url_for('expenses.new_expense')}}"
-        autofocus>
-        New Expense
-    </a>
+<div class="d-flex flex-row-reverse mb-3">
+    <div class="btn-group">
+        <a class="btn btn-secondary"
+            href="{{url_for('expenses.export_expenses')}}">
+            Export
+        </a>
+        <a class="btn btn-primary" href="{{url_for('expenses.new_expense')}}"
+            autofocus>
+            New Expense
+        </a>
+    </div>
 </div>
-<table class="table">
-    <tr>
-        <th scope="col">Date</th>
-        <th scope="col" class="text-center">Title</th>
-        <th scope="col" class="text-center">Amount</th>
-        <th scope="col" class="text-center">Category</th>
-        <th scope="col" class="text-center">Tags</th>
-        <th></th>
-    </tr>
-    {% for expense in expenses %}
-    <tr>
-        <td>{{ expense.date.strftime('%m/%d/%y') }}</td>
-        <td class="text-center">
-            <a href="{{url_for('expenses.expense', id=expense.id)}}">
-                {{ expense.title }}
-            </a>
-        </td>
-        <td class="text-center">{{ expense.formatted_amount() }}</td>
-        <td class="text-center" style="background: #{{expense.category.color}}">
-            {{ expense.category.title }}
-        </td>
-        <td class="text-center">
-            {% for expense_tag in expense.tags %}
-            <span class="badge"
-                style="background-color: #{{ expense_tag.tag.color }};">
-                {{ expense_tag.tag.name }}
-            </span>
-            {% endfor %}
-        </td>
-        <td>
-            <a href='{{url_for("expenses.delete_expense", id=expense.id)}}'>
-                <img src="{{ url_for('static', filename='delete.svg') }}"
-                    alt="Delete" />
-            </a>
-        </td>
+<div class="table-responsive">
+    <table class="table ">
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col" class="text-center">Title</th>
+            <th scope="col" class="text-center">Amount</th>
+            <th scope="col" class="text-center">Category</th>
+            <th scope="col" class="text-center">Tags</th>
+            <th></th>
+        </tr>
+        {% for expense in expenses %}
+        <tr>
+            <td>{{ expense.date.strftime('%m/%d/%y') }}</td>
+            <td class="text-center">
+                <a href="{{url_for('expenses.expense', id=expense.id)}}">
+                    {{ expense.title }}
+                </a>
+            </td>
+            <td class="text-center">{{ expense.formatted_amount() }}</td>
+            <td class="text-center"
+                style="background: #{{expense.category.color}}">
+                {{ expense.category.title }}
+            </td>
+            <td class="text-center">
+                {% for expense_tag in expense.tags %}
+                <span class="badge"
+                    style="background-color: #{{ expense_tag.tag.color }};">
+                    {{ expense_tag.tag.name }}
+                </span>
+                {% endfor %}
+            </td>
+            <td>
+                <a href='{{url_for("expenses.delete_expense", id=expense.id)}}'>
+                    <img src="{{ url_for('static', filename='delete.svg') }}"
+                        alt="Delete" />
+                </a>
+            </td>
 
-    </tr>
-    {% endfor %}
-</table>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 <div class="d-flex justify-content-between mb-3">
     <div>
         {% if prev_url %}

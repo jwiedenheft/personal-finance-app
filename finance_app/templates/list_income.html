@@ -1,42 +1,47 @@
 {% extends "layout.html" %}
 {% block content %}
-<div class="float-end mb-3 btn-group">
-    <a class="btn btn-secondary" href="{{url_for('income.export_income')}}">
-        Export
-    </a>
-    <a class="btn btn-primary" href="{{url_for('income.new_paycheck')}}">
-        Add Paycheck
-    </a>
-    <a class="btn btn-primary" href="{{url_for('income.new_income')}}">
-        New Income
-    </a>
+<div class="d-flex flex-row-reverse mb-3">
+    <div class="btn-group">
+        <a class="btn btn-secondary" href="{{url_for('income.export_income')}}">
+            Export
+        </a>
+        <a class="btn btn-primary" href="{{url_for('income.new_paycheck')}}">
+            Add Paycheck
+        </a>
+        <a class="btn btn-primary" href="{{url_for('income.new_income')}}">
+            New Income
+        </a>
+    </div>
 </div>
-<table class="table">
-    <tr>
-        <th scope="col">Date</th>
-        <th scope="col" class="text-center">Title</th>
-        <th scope="col" class="text-center">
-            Category
-        </th>
-        <th scope="col" class="text-center">Amount</th>
-        <th></th>
-    </tr>
-    {% for income in income_items %}
-    <tr>
-        <td>{{ income.date_string }}</td>
-        <td class="text-center">{{ income.title }}</td>
-        <td class="text-center" style="background: #{{income.category.color}}">
-            {{ income.category.title }}</td>
-        <td class="text-center">{{ income.formatted_amount() }}</td>
-        <td>
-            <a href='{{url_for("income.delete_income", id=income.id)}}'>
-                <img src="{{ url_for('static', filename='delete.svg') }}"
-                    alt="Delete" />
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="table-responsive">
+    <table class="table">
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col" class="text-center">Title</th>
+            <th scope="col" class="text-center">
+                Category
+            </th>
+            <th scope="col" class="text-center">Amount</th>
+            <th></th>
+        </tr>
+        {% for income in income_items %}
+        <tr>
+            <td>{{ income.date_string }}</td>
+            <td class="text-center">{{ income.title }}</td>
+            <td class="text-center"
+                style="background: #{{income.category.color}}">
+                {{ income.category.title }}</td>
+            <td class="text-center">{{ income.formatted_amount() }}</td>
+            <td>
+                <a href='{{url_for("income.delete_income", id=income.id)}}'>
+                    <img src="{{ url_for('static', filename='delete.svg') }}"
+                        alt="Delete" />
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
 <div class="d-flex justify-content-between mb-3">
     <div>
         {% if prev_url %}
