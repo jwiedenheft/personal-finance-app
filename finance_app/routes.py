@@ -218,7 +218,33 @@ def new_expense():
         db.session.commit()
 
         return redirect(url_for("expenses.list_expenses"))
-    return render_template("new_expense.html", form=form)
+    return render_template("expense_form.html", form=form)
+
+
+@expenses.route("/expenses/<id>", methods=["GET", "POST"])
+def expense(id: int):
+    expense: Expense = Expense.query.get_or_404(id)
+    form: ExpenseForm = ExpenseForm()
+    form.category.choices = [(cat.code, cat.title) for cat in Category.query.all()]
+    if request.method == "GET":
+        form.amount.data = expense.amount / 100
+        form.notes.data = expense.notes
+        form.date.data = expense.date
+        form.title.data = expense.title
+        form.category.data = expense.category_code
+    elif form.validate_on_submit():
+        category = Category.query.get(form.category.data)
+        expense.date = form.date.data
+        expense.title = form.title.data
+        expense.notes = form.notes.data
+        expense.amount = int(form.amount.data * 100)
+        expense.category = category
+        db.session.commit()
+        return redirect(url_for("expenses.list_expenses"))
+    return render_template(
+        "expense_form.html",
+        form=form,
+    )
 
 
 @expenses.route("/delete/<id>")

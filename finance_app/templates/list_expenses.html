@@ -21,7 +21,11 @@
     {% for expense in expenses %}
     <tr>
         <td>{{ expense.date.strftime('%m/%d/%y') }}</td>
-        <td class="text-center">{{ expense.title }}</td>
+        <td class="text-center">
+            <a href="{{url_for('expenses.expense', id=expense.id)}}">
+                {{ expense.title }}
+            </a>
+        </td>
         <td class="text-center">{{ expense.formatted_amount() }}</td>
         <td class="text-center" style="background: #{{expense.category.color}}">
             {{ expense.category.title }}
