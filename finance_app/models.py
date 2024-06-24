@@ -15,6 +15,15 @@ class Category(db.Model):
     expenses: Mapped[List["Expense"]] = relationship(back_populates="category")
     income: Mapped[List["Income"]] = relationship(back_populates="category")
 
+    def balance_current(self):
+        total_expense = sum(
+            [e.amount for e in self.expenses if e.date <= datetime.today()]
+        )
+        total_income = sum(
+            [i.amount for i in self.income if i.date <= datetime.today()]
+        )
+        return total_income - total_expense
+
     def balance(self):
         return self.income_total - self.expenses_total
 

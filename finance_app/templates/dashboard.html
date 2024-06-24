@@ -19,7 +19,7 @@
         color: #9C0006;
         {% endif %}
         ">
-            {{ category.balance() | int_to_money }}
+            {{ category.balance_current() | int_to_money }}
         </td>
     </tr>
     {% endfor %}
