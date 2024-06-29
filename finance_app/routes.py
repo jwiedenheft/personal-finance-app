@@ -217,7 +217,7 @@ def new_expense():
         )
         if form.tags.data:
             for tag in form.tags.data.split(";"):
-                tag = Tag.query.get(tag) or Tag(name=tag)
+                tag = Tag.query.where(Tag.name == tag).first() or Tag(name=tag)
                 expense.tags.append(ExpenseTag(tag=tag))
         db.session.add(expense)
         db.session.commit()
