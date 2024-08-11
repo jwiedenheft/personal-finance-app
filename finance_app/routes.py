@@ -215,11 +215,11 @@ def new_expense():
             amount=int(form.amount.data * 100),
             category=category,
         )
+        db.session.add(expense)
         if form.tags.data:
             for tag in form.tags.data.split(";"):
                 tag = Tag.query.where(Tag.name == tag).first() or Tag(name=tag)
-                expense.tags.append(ExpenseTag(tag=tag))
-        db.session.add(expense)
+                db.session.add(ExpenseTag(tag=tag, expense=expense))
         db.session.commit()
 
         return redirect(url_for("expenses.list_expenses"))
