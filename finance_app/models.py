@@ -1,6 +1,6 @@
 from typing import List
 from finance_app import db
-from sqlalchemy import DateTime, ForeignKey, Integer, String
+from sqlalchemy import DateTime, ForeignKey, Integer, String, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 
@@ -34,6 +34,40 @@ class Category(db.Model):
     @property
     def income_total(self):
         return sum([i.amount for i in self.income])
+
+    def balance_for_month(self, year: int, month: int):
+        month_start = datetime(year=year, month=month, day=1)
+        next_month = month + 1
+        if next_month > 12:
+            next_month = next_month - 12
+        next_month_start = datetime(
+            year=year + 1 if month == 12 else year,
+            month=next_month,
+            day=1,
+        )
+        month_income = (
+            db.session.execute(
+                select(Income.amount).where(
+                    Income.category == self,
+                    Income.date >= month_start,
+                    Income.date < next_month_start,
+                )
+            )
+            .scalars()
+            .all()
+        )
+        month_expense = (
+            db.session.execute(
+                select(Expense.amount).where(
+                    Expense.category == self,
+                    Expense.date >= month_start,
+                    Expense.date < next_month_start,
+                )
+            )
+            .scalars()
+            .all()
+        )
+        return sum(month_income) - sum(month_expense)
 
 
 class Income(db.Model):

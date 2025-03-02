@@ -1,3 +1,4 @@
+import datetime
 from flask import (
     Blueprint,
     current_app,
@@ -7,13 +8,13 @@ from flask import (
     url_for,
     request,
 )
-from sqlalchemy import select
 from finance_app.forms.expense_form import ExpenseForm
 from finance_app.forms.income_form import IncomeForm
 from finance_app.models import Category, Expense, ExpenseTag, Income, Tag
 from finance_app import db
 from finance_app.utils import int_to_money, make_csv_file
 from flask_login import login_required
+import calendar
 
 
 main = Blueprint("main", __name__, template_folder="templates")
@@ -35,7 +36,18 @@ def list_categories():
 @main.route("/dashboard")
 @login_required
 def dashboard():
-    return render_template("dashboard.html", categories=Category.query.all())
+    today = datetime.datetime.today()
+    year = today.year
+    months = [
+        (month, (year if month <= today.month else year - 1)) for month in range(1, 12)
+    ]
+    months.sort(key=lambda x: x[1] * 100 + x[0], reverse=True)
+    return render_template(
+        "dashboard.html",
+        categories=Category.query.all(),
+        months=months,
+        calendar=calendar,
+    )
 
 
 income = Blueprint(
