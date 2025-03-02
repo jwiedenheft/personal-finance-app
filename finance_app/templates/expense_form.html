@@ -19,14 +19,14 @@
         {{ form.category.label }}<br>
         {{ form.category(class="form-control") }}
     </div>
+    <div class="mb-2">
+        {{ form.tags.label }}<br>
+        {{ form.tags(class="form-control") }}
+    </div>
     <p>{{ form.submit(class="btn btn-primary mt-3") }}</p>
     <div class="mb-2">
         {{ form.notes.label }}<br>
         {{ form.notes(class="form-control") }}
-    </div>
-    <div class="mb-2">
-        {{ form.tags.label }}<br>
-        {{ form.tags(class="form-control") }}
     </div>
 </form>
 {% endblock %}
