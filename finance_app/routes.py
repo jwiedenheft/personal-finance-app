@@ -8,6 +8,7 @@ from flask import (
     url_for,
     request,
 )
+from sqlalchemy import exists
 from finance_app.forms.expense_form import ExpenseForm
 from finance_app.forms.income_form import IncomeForm
 from finance_app.models import Category, Expense, ExpenseTag, Income, Tag
@@ -15,7 +16,6 @@ from finance_app import db
 from finance_app.utils import int_to_money, make_csv_file
 from flask_login import login_required
 import calendar
-
 
 main = Blueprint("main", __name__, template_folder="templates")
 
@@ -193,17 +193,37 @@ expenses = Blueprint(
 def list_expenses():
     page = request.args.get("page", 1, type=int)
     items_per_page = current_app.config.get("RESULTS_PER_PAGE") or 10
-    expenses = Expense.query.order_by(
+
+    query = Expense.query
+    if tag := request.args.get("tag"):
+        tag = Tag.query.where(Tag.name == tag).first()
+        query = query.where(
+            exists().where(ExpenseTag.tag == tag, ExpenseTag.expense_id == Expense.id)
+        )
+
+    expenses = query.order_by(
         Expense.date.desc(),
         Expense.create_date.desc(),
     ).paginate(page=page, per_page=items_per_page)
 
+    args = request.args.copy()
+    if "page" in args:
+        args.pop("page")
+
     next_url = None
     if expenses.has_next:
-        next_url = url_for("expenses.list_expenses", page=expenses.next_num)
+        next_url = url_for(
+            "expenses.list_expenses",
+            page=expenses.next_num,
+            **args,
+        )
     prev_url = None
     if expenses.has_prev:
-        prev_url = url_for("expenses.list_expenses", page=expenses.prev_num)
+        prev_url = url_for(
+            "expenses.list_expenses",
+            page=expenses.prev_num,
+            **args,
+        )
 
     return render_template(
         "list_expenses.html",

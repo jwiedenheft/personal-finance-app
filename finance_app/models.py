@@ -123,6 +123,9 @@ class Expense(db.Model):
         tags = [et.tag.name for et in self.tags]
         return ";".join(tags)
 
+    def has_tag(self, tag: str):
+        return any(t.tag.name == tag for t in self.tags)
+
 
 class Tag(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
