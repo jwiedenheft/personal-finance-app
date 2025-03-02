@@ -39,7 +39,7 @@ def dashboard():
     today = datetime.datetime.today()
     year = today.year
     months = [
-        (month, (year if month <= today.month else year - 1)) for month in range(1, 12)
+        (month, (year if month <= today.month else year - 1)) for month in range(1, 13)
     ]
     months.sort(key=lambda x: x[1] * 100 + x[0], reverse=True)
     return render_template(
