@@ -6,8 +6,6 @@ from flask_login import LoginManager
 from finance_app.login import setup_login
 from config import Config
 import logging
-import locale
-
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -15,7 +13,6 @@ login = LoginManager()
 
 
 def create_app(config_class=Config):
-    locale.setlocale(locale.LC_ALL, "")
     if not os.path.exists("logs"):
         os.mkdir("logs")
 
@@ -43,7 +40,11 @@ def create_app(config_class=Config):
 
     @app.template_filter("int_to_money")
     def int_to_money(cents: int):  # noqa: F811
-        return locale.currency(cents / 100)
+        amt = cents / 100
+        if amt < 0:
+            return f"-${abs(amt):,.2f}"
+        else:
+            return f"${amt:,.2f}"
 
     return app
 
