@@ -16,6 +16,7 @@ from finance_app import db
 from finance_app.utils import int_to_money, make_csv_file
 from flask_login import login_required
 import calendar
+import finance_app.templates as templates
 
 main = Blueprint("main", __name__, template_folder="templates")
 
@@ -42,12 +43,18 @@ def dashboard():
         (month, (year if month <= today.month else year - 1)) for month in range(1, 13)
     ]
     months.sort(key=lambda x: x[1] * 100 + x[0], reverse=True)
-    return render_template(
-        "dashboard.html",
-        categories=Category.query.all(),
-        months=months,
-        calendar=calendar,
+
+    return templates.dashboard(
+        Category.query.all(),
+        months,
+        calendar,
     )
+    # return render_template(
+    #     "dashboard.html",
+    #     categories=,
+    #     months=months,
+    #     calendar=calendar,
+    # )
 
 
 income = Blueprint(
@@ -225,12 +232,17 @@ def list_expenses():
             **args,
         )
 
-    return render_template(
-        "list_expenses.html",
-        expenses=expenses.items,
-        next_url=next_url,
-        prev_url=prev_url,
+    return templates.list_expenses(
+        expenses.items,
+        next_url,
+        prev_url,
     )
+    # return render_template(
+    #     "list_expenses.html",
+    #     expenses=expenses.items,
+    #     next_url=next_url,
+    #     prev_url=prev_url,
+    # )
 
 
 @expenses.route("/new", methods=["GET", "POST"])
