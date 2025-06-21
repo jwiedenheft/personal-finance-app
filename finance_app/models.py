@@ -143,3 +143,11 @@ class ExpenseTag(db.Model):
 
     tag_id: Mapped[int] = mapped_column(ForeignKey(f"{Tag.__tablename__}.id"))
     tag: Mapped["Tag"] = relationship()
+
+
+class RepeatExpense(db.Model):
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    expense_id: Mapped[int] = mapped_column(ForeignKey(Expense.id), nullable=False)
+
+    repeat_scale: Mapped[str] = mapped_column(String(10), nullable=False)
+    repeat_increment: Mapped[int] = mapped_column(Integer, nullable=False)
