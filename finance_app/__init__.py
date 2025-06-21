@@ -46,6 +46,12 @@ def create_app(config_class=Config):
         else:
             return f"${amt:,.2f}"
 
+    @app.template_filter("format_date")
+    def format_date(date):  # noqa: F811
+        if date:
+            return date.strftime("%m/%d/%y")
+        return ""
+
     return app
 
 

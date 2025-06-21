@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% block content %}
+<div class="container mt-4">
+    <h2>Repeat Expenses</h2>
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Expense</th>
+                <th>Amount</th>
+                <th>Category</th>
+                <th>Repeat</th>
+                <th>Repeat Increment</th>
+                <th>Last Exepense</th>
+                <th>Next Expense</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for repeat in repeats %}
+            <tr>
+                <td>
+                    <a href="{{url_for('expenses.expense', id=repeat.expense_id)}}">
+                        {{ repeat.expense.title }}
+                    </a>
+                </td>
+                <td>
+                    {{ repeat.expense.formatted_amount() }}
+                </td>
+                <td style="background: #{{repeat.expense.category.color}}">
+                    {{ repeat.expense.category.title }}
+                </td>
+                <td>
+                    {{repeat.repeat_scale_string()}}
+                </td>
+                <td>
+                    {{ repeat.repeat_increment }}
+                </td>
+                <td>
+                    {% set most_recent = repeat.most_recent_expense() %}
+                    {% if most_recent %}
+                    {{most_recent.date | format_date }}
+                    {% endif %}
+                </td>
+                <td>
+                    {{ repeat.next_expense_date() | format_date }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

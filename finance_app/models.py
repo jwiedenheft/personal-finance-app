@@ -3,7 +3,7 @@ from finance_app import db
 from sqlalchemy import DateTime, ForeignKey, Integer, String, select
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
-
+from dateutil import relativedelta
 from finance_app.utils import int_to_money
 
 
@@ -116,6 +116,13 @@ class Expense(db.Model):
         cascade="delete",
     )
 
+    repeat: Mapped["RepeatExpense"] = relationship(
+        "RepeatExpense",
+        back_populates="expense",
+        uselist=True,
+    )
+    repeat_id: Mapped[int] = mapped_column(nullable=True)
+
     def formatted_amount(self):
         return f"-{int_to_money(self.amount)}"
 
@@ -148,6 +155,41 @@ class ExpenseTag(db.Model):
 class RepeatExpense(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     expense_id: Mapped[int] = mapped_column(ForeignKey(Expense.id), nullable=False)
+    expense: Mapped[Expense] = relationship(
+        Expense,
+        foreign_keys=expense_id,
+        back_populates="repeat",
+    )
 
     repeat_scale: Mapped[str] = mapped_column(String(10), nullable=False)
     repeat_increment: Mapped[int] = mapped_column(Integer, nullable=False)
+
+    def repeat_scale_string(self):
+        scale_strings = {
+            "days": "Daily",
+            "weeks": "Weekly",
+            "months": "Monthly",
+            "years": "Yearly",
+        }
+        return scale_strings.get(self.repeat_scale, "Unknown")
+
+    def most_recent_expense(self):
+        return (
+            db.session.execute(
+                select(Expense)
+                .where(Expense.repeat_id == self.id)
+                .order_by(Expense.date.desc())
+            )
+            .scalars()
+            .first()
+        )
+
+    def next_expense_date(self):
+        last_expense = self.most_recent_expense()
+        if not last_expense:
+            return None
+        return last_expense.date + relativedelta.relativedelta(
+            **{
+                self.repeat_scale: self.repeat_increment,
+            }
+        )
