@@ -31,7 +31,7 @@ class ExpenseForm(FlaskForm):
             ("years", "Year(s)"),
         ],
     )
-    repeat_increment = IntegerField()
+    repeat_increment = IntegerField(default=1)
 
     def validate_repeatable(self, field):
         if field.data and not self.repeat_scale.data:
