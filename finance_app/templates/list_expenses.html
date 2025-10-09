@@ -40,7 +40,10 @@
                 {% for expense_tag in expense.tags %}
                 <span class="badge"
                     style="background-color: #{{ expense_tag.tag.color }};">
-                    {{ expense_tag.tag.name }}
+                    <a href="{{url_for('expenses.list_expenses', tag=expense_tag.tag.name)}}"
+                        class="text-white text-decoration-none">
+                        {{ expense_tag.tag.name }}
+                    </a>
                 </span>
                 {% endfor %}
             </td>
