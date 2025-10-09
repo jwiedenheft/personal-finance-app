@@ -184,7 +184,10 @@ def export_income():
 
 
 expenses = Blueprint(
-    "expenses", __name__, url_prefix="/expenses", template_folder="templates"
+    "expenses",
+    __name__,
+    url_prefix="/expenses",
+    template_folder="templates",
 )
 
 
@@ -200,6 +203,8 @@ def list_expenses():
         query = query.where(
             exists().where(ExpenseTag.tag == tag, ExpenseTag.expense_id == Expense.id)
         )
+    if search_term := request.args.get("search"):
+        query = query.where(Expense.title.ilike(f"%{search_term}%"))
 
     expenses = query.order_by(
         Expense.date.desc(),
