@@ -6,10 +6,12 @@ from flask_login import LoginManager
 from finance_app.login import setup_login
 from config import Config
 import logging
+from finance_app.scheduler import FlaskScheduler
 
 db = SQLAlchemy()
 migrate = Migrate()
 login = LoginManager()
+scheduler = FlaskScheduler()
 
 
 def create_app(config_class=Config):
@@ -23,6 +25,7 @@ def create_app(config_class=Config):
 
     db.init_app(app)
     migrate.init_app(app, db)
+    scheduler.init_app(app)
     login.init_app(app)
     setup_login(app, login)
 
