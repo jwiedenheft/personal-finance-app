@@ -22,7 +22,7 @@
             <th scope="col" class="text-center">Amount</th>
             <th scope="col" class="text-center">Category</th>
             <th scope="col" class="text-center">Tags</th>
-            <th></th>
+            <th>Actions</th>
         </tr>
         {% for expense in expenses %}
         <tr>
@@ -48,9 +48,14 @@
                 {% endfor %}
             </td>
             <td>
-                <a href='{{url_for("expenses.delete_expense", id=expense.id)}}'>
-                    <img src="{{ url_for('static', filename='delete.svg') }}"
-                        alt="Delete" />
+                <a href='{{url_for("expenses.delete_expense", id=expense.id)}}'
+                    style="text-decoration: none;">
+                    <img src="{{ url_for('static', filename='delete.svg') }}" alt="Delete"
+                        title="Delete" />
+                </a>
+                <a href='{{url_for("expenses.repeat_expense", id=expense.id)}}'>
+                    <img src="{{ url_for('static', filename='repeat.svg') }}" alt="Repeat"
+                        title="Repeat" />
                 </a>
             </td>
 

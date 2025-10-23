@@ -345,6 +345,28 @@ def expense(id: int):
     )
 
 
+@expenses.get("/expenses/<id>/repeat")
+@login_required
+def repeat_expense(id: int):
+    expense: Expense = Expense.query.get_or_404(id)
+    new_expense = Expense(
+        date=datetime.datetime.now(),
+        title=expense.title,
+        notes=expense.notes,
+        amount=expense.amount,
+        category=expense.category,
+        create_date=datetime.datetime.now(),
+    )
+    db.session.add(new_expense)
+    db.session.commit()
+    db.session.refresh(new_expense)
+    for tag in expense.tags:
+        new_expense_tag = ExpenseTag(tag=tag.tag, expense=new_expense)
+        db.session.add(new_expense_tag)
+    db.session.commit()
+    return redirect(url_for("expenses.expense", id=new_expense.id))
+
+
 @expenses.route("/delete/<id>")
 @login_required
 def delete_expense(id: int):
