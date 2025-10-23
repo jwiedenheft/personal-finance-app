@@ -11,7 +11,7 @@ from flask import (
 from sqlalchemy import exists
 from finance_app.forms.expense_form import ExpenseForm
 from finance_app.forms.income_form import IncomeForm
-from finance_app.models import Category, Expense, ExpenseTag, Income, RepeatExpense, Tag
+from finance_app.models import Category, Expense, ExpenseTag, Income, Tag
 from finance_app import db
 from finance_app.utils import int_to_money, make_csv_file
 from flask_login import login_required
@@ -258,19 +258,6 @@ def new_expense():
                 tag = Tag.query.where(Tag.name == tag).first() or Tag(name=tag)
                 db.session.add(ExpenseTag(tag=tag, expense=expense))
 
-        if form.repeatable.data:
-            scale = form.repeat_scale.data
-            increment = form.repeat_increment.data
-            repeat_expense = RepeatExpense(
-                expense=expense,
-                repeat_scale=scale,
-                repeat_increment=increment,
-            )
-            db.session.add(repeat_expense)
-            db.session.commit()
-            db.session.refresh(repeat_expense)
-            expense.repeat_id = repeat_expense.id
-
         db.session.commit()
 
         return redirect(url_for("expenses.list_expenses"))
@@ -291,11 +278,6 @@ def expense(id: int):
         form.category.data = expense.category_code
         form.tags.data = expense.tag_string()
 
-        if expense.repeat:
-            form.repeatable.data = True
-            form.repeat_scale.data = expense.repeat.repeat_scale
-            form.repeat_increment.data = expense.repeat.repeat_increment
-
     elif form.validate_on_submit():
         category = Category.query.get(form.category.data)
         expense.date = form.date.data
@@ -312,28 +294,6 @@ def expense(id: int):
                     continue
                 tag = Tag.query.where(Tag.name == tag).first() or Tag(name=tag)
                 db.session.add(ExpenseTag(tag=tag, expense=expense))
-
-        if form.repeatable.data:
-            scale = form.repeat_scale.data
-            increment = form.repeat_increment.data
-            if expense.repeat:
-                # Update existing repeat expense
-                expense.repeat.repeat_scale = scale
-                expense.repeat.repeat_increment = increment
-            else:
-                # Create new repeat expense
-                repeat_expense = RepeatExpense(
-                    expense=expense,
-                    repeat_scale=scale,
-                    repeat_increment=increment,
-                )
-                db.session.add(repeat_expense)
-                db.session.commit()
-                db.session.refresh(repeat_expense)
-                expense.repeat_id = repeat_expense.id
-        elif expense.repeat:
-            # Remove repeat expense if it exists
-            db.session.delete(expense.repeat)
 
         db.session.commit()
 
@@ -400,10 +360,3 @@ def export_expenses():
         mimetype="text/csv",
         download_name="expenses.csv",
     )
-
-
-@expenses.route("/repeated")
-@login_required
-def repeat_expenses():
-    repeats = RepeatExpense.query.all()
-    return render_template("repeat_expenses.html", repeats=repeats)
