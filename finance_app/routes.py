@@ -278,6 +278,7 @@ def new_expense():
 
 
 @expenses.route("/expenses/<id>", methods=["GET", "POST"])
+@login_required
 def expense(id: int):
     expense: Expense = Expense.query.get_or_404(id)
     form: ExpenseForm = ExpenseForm()
