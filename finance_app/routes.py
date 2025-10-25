@@ -238,11 +238,35 @@ def list_expenses():
     )
 
 
+@expenses.route("/search/data", methods=["GET", "POST"])
+@login_required
+def get_expense_data_by_title():
+    title = request.args.get("title")
+    expense: Expense = (
+        Expense.query.filter_by(title=title).order_by(Expense.date.desc()).first()
+    )
+    if expense:
+        data = {
+            "date": expense.date.strftime("%Y-%m-%d"),
+            "notes": expense.notes,
+            "amount": expense.amount / 100,
+            "category": expense.category_code,
+            "tags": ";".join(set([et.tag.name for et in expense.tags])),
+        }
+        return data, 200
+    return {"error": "No expenses with this title found."}, 404
+
+
 @expenses.route("/new", methods=["GET", "POST"])
 @login_required
 def new_expense():
     form: ExpenseForm = ExpenseForm()
     form.category.choices = [(cat.code, cat.title) for cat in Category.query.all()]
+    # Default the date field to the most recent expense date
+    if request.method == "GET":
+        most_recent: Expense = Expense.query.order_by(Expense.date.desc()).first()
+        form.date.data = most_recent.date
+    # Validate the form
     if form.validate_on_submit():
         category = Category.query.get(form.category.data)
         expense = Expense(
@@ -253,6 +277,7 @@ def new_expense():
             category=category,
         )
         db.session.add(expense)
+        # Process tags
         if form.tags.data:
             for tag in form.tags.data.split(";"):
                 tag = Tag.query.where(Tag.name == tag).first() or Tag(name=tag)
@@ -261,12 +286,13 @@ def new_expense():
         db.session.commit()
 
         return redirect(url_for("expenses.list_expenses"))
-    return render_template("expense_form.html", form=form)
+    return render_template("expense_form_new.html", form=form)
 
 
 @expenses.route("/expenses/<id>", methods=["GET", "POST"])
 @login_required
 def expense(id: int):
+    """Update an existing expense."""
     expense: Expense = Expense.query.get_or_404(id)
     form: ExpenseForm = ExpenseForm()
     form.category.choices = [(cat.code, cat.title) for cat in Category.query.all()]

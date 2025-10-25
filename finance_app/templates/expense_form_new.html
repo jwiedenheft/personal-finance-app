@@ -1,0 +1,79 @@
+{% extends "layout.html" %}
+{% block content %}
+<h1>Add Expense</h1>
+<form method="post" novalidate>
+    {{ form.hidden_tag() }}
+
+    {% if form.errors %}
+    <div class="alert alert-danger" role="alert">
+        <ul>
+            {% for field, errors in form.errors.items() %}
+            {% for error in errors %}
+            <li><b>{{ form[field].label.text }}:</b> {{ error }}</li>
+            {% endfor %}
+            {% endfor %}
+        </ul>
+    </div>
+    {% else %}
+    {% endif %}
+
+    <div class="mb-2">
+        {{ form.date.label }}<br>
+        {{ form.date(class="form-control", autofocus=True)}}
+    </div>
+    <div class="mb-2">
+        {{ form.title.label }}<br>
+        <div class="input-group">
+            {{ form.title(class="form-control") }}
+            <script>
+                function autoFill() {
+                    const titleInput = document.getElementById("title");
+                    fetch("/expenses/search/data?title=" + titleInput.value)
+                        .then((response) => response.json())
+                        .then((data) => {
+                            if (data.amount) {
+                                document.getElementById("amount").value = data.amount;
+                            }
+                            if (data.tags) {
+                                document.getElementById("tags").value = data.tags;
+                            }
+                            if (data.category) {
+                                const categorySelect = document.getElementById("category")
+                                categorySelect.childNodes.forEach((option) => {
+                                    if (option.value == data.category) {
+                                        option.selected = true;
+                                    } else {
+                                        option.selected = false;
+                                    }
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.error("Error fetching data:", error);
+                        });
+                }
+            </script>
+            <button class="btn btn-primary" onclick="autoFill()" type="button">
+                Auto-Fill
+            </button>
+        </div>
+    </div>
+    <div class="mb-2">
+        {{ form.amount.label }}<br>
+        {{ form.amount(class="form-control") }}
+    </div>
+    <div class="mb-2">
+        {{ form.category.label }}<br>
+        {{ form.category(class="form-control") }}
+    </div>
+    <div class="mb-2">
+        {{ form.tags.label }}<br>
+        {{ form.tags(class="form-control") }}
+    </div>
+    <p>{{ form.submit(class="btn btn-primary mt-3") }}</p>
+    <div class="mb-2">
+        {{ form.notes.label }}<br>
+        {{ form.notes(class="form-control") }}
+    </div>
+</form>
+{% endblock %}
