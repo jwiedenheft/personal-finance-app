@@ -39,7 +39,10 @@
                 </td>
                 <td class="text-center">{{ expense.formatted_amount() }}</td>
                 <td class="text-center" style="background: #{{expense.category.color}}">
-                    {{ expense.category.title }}
+                    <a class="text-decoration-none text-reset"
+                        href="{{url_for('expenses.list_expenses', category=expense.category.code)}}">
+                        {{ expense.category.title }}
+                    </a>
                 </td>
                 <td class="text-center">
                     {% for expense_tag in expense.tags %}

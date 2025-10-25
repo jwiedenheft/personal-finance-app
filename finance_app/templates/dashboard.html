@@ -21,6 +21,12 @@
         ">
             {{ balance | int_to_money }}
         </td>
+        <td class="text-end w-25">
+            <a href="{{url_for('expenses.list_expenses', category=category.code)}}"
+                class="text-reset">
+                Expenses
+            </a>
+        </td>
     </tr>
     {% endfor %}
 </table>
