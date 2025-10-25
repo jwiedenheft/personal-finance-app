@@ -203,14 +203,23 @@ def list_expenses():
     items_per_page = current_app.config.get("RESULTS_PER_PAGE") or 10
 
     query = Expense.query
+
+    # Apply tag search filter
     if tag := request.args.get("tag"):
         tag = Tag.query.where(Tag.name == tag).first()
         query = query.where(
             exists().where(ExpenseTag.tag == tag, ExpenseTag.expense_id == Expense.id)
         )
+
+    # Apply category filter
+    if category := request.args.get("category"):
+        query = query.where(Expense.category_code == category)
+
+    # Apply title search filter
     if search_term := request.args.get("search"):
         query = query.where(Expense.title.ilike(f"%{search_term}%"))
 
+    # Paginate results
     expenses = query.order_by(
         Expense.date.desc(),
         Expense.create_date.desc(),
