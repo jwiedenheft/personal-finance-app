@@ -327,8 +327,7 @@ def expense(id: int):
 
         return redirect(url_for("expenses.list_expenses"))
     return render_template(
-        "expense_form.html",
-        heading="Edit Expense",
+        "expense_form_edit.html",
         form=form,
     )
 
