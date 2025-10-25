@@ -68,6 +68,10 @@ def list_income():
     if category := request.args.get("category"):
         query = query.where(Income.category_code == category)
 
+    # Apply title search filter
+    if search_term := request.args.get("search"):
+        query = query.where(Income.title.ilike(f"%{search_term}%"))
+
     income = query.order_by(
         Income.date.desc(),
         Income.create_date.desc(),
