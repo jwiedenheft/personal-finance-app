@@ -1,5 +1,4 @@
 # TO-DO List:
-- Filter by category
 - Backup for database
 - Better experience on mobile
 - "Transactions" that can include multiple incomes or expenses and that can
