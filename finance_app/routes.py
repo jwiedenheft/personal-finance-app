@@ -62,7 +62,13 @@ def list_income():
     page = request.args.get("page", 1, type=int)
     items_per_page = current_app.config.get("RESULTS_PER_PAGE") or 10
 
-    income = Income.query.order_by(
+    query = Income.query
+
+    # Apply category filter
+    if category := request.args.get("category"):
+        query = query.where(Income.category_code == category)
+
+    income = query.order_by(
         Income.date.desc(),
         Income.create_date.desc(),
     ).paginate(page=page, per_page=items_per_page)

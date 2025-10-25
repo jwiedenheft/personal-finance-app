@@ -31,7 +31,11 @@
                 <td>{{ income.date_string }}</td>
                 <td class="text-center">{{ income.title }}</td>
                 <td class="text-center" style="background: #{{income.category.color}}">
-                    {{ income.category.title }}</td>
+                    <a class="text-decoration-none text-reset"
+                        href="{{url_for('income.list_income', category=income.category.code)}}">
+                        {{ income.category.title }}
+                    </a>
+                </td>
                 <td class="text-center">{{ income.formatted_amount() }}</td>
                 <td>
                     <a href='{{url_for("income.delete_income", id=income.id)}}'>
