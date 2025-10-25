@@ -262,9 +262,11 @@ def get_expense_data_by_title():
 def new_expense():
     form: ExpenseForm = ExpenseForm()
     form.category.choices = [(cat.code, cat.title) for cat in Category.query.all()]
-    # Default the date field to the most recent expense date
+    # Default the date field to the same date as the most recently create expense
     if request.method == "GET":
-        most_recent: Expense = Expense.query.order_by(Expense.date.desc()).first()
+        most_recent: Expense = Expense.query.order_by(
+            Expense.create_date.desc()
+        ).first()
         form.date.data = most_recent.date
     # Validate the form
     if form.validate_on_submit():
