@@ -70,15 +70,19 @@ def list_income():
     next_url = None
     if income.has_next:
         next_url = url_for("income.list_income", page=income.next_num)
-    prev_url = None
-    if income.has_prev:
-        prev_url = url_for("income.list_income", page=income.prev_num)
+
+    if request.headers.get("HX-Request") == "true":
+        return render_blocks(
+            "list_income.html",
+            ["income_rows", "load_more_btn"],
+            income_items=income.items,
+            next_url=next_url,
+        )
 
     return render_template(
         "list_income.html",
         income_items=income.items,
         next_url=next_url,
-        prev_url=prev_url,
     )
 
 
