@@ -16,6 +16,7 @@ from finance_app import db
 from finance_app.utils import int_to_money, make_csv_file
 from flask_login import login_required
 import calendar
+from jinja2_fragments.flask import render_blocks
 
 main = Blueprint("main", __name__, template_folder="templates")
 
@@ -222,19 +223,19 @@ def list_expenses():
             page=expenses.next_num,
             **args,
         )
-    prev_url = None
-    if expenses.has_prev:
-        prev_url = url_for(
-            "expenses.list_expenses",
-            page=expenses.prev_num,
-            **args,
+
+    if request.headers.get("HX-Request") == "true":
+        return render_blocks(
+            "list_expenses.html",
+            ["expense_rows", "load_more_btn"],
+            expenses=expenses.items,
+            next_url=next_url,
         )
 
     return render_template(
         "list_expenses.html",
         expenses=expenses.items,
         next_url=next_url,
-        prev_url=prev_url,
     )
 
 
