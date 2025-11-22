@@ -34,6 +34,8 @@ def create_app(config_class=Config):
     from finance_app.routes import income as income_bp
 
     app.register_blueprint(main_bp)
+    from finance_app.cli.backup import backup_bp
+    app.register_blueprint(backup_bp)
     app.register_blueprint(expenses_bp)
     app.register_blueprint(income_bp)
 
