@@ -29,9 +29,24 @@
 
         <tbody id="table_body">
             {% block expense_rows %}
+
+            {% set vars = namespace(stripe_date = "", row_class = "") %}
             {% for expense in expenses %}
-            <tr>
-                <td>{{ expense.date.strftime('%m/%d/%y') }}</td>
+
+            {% set datestring = expense.date.strftime('%m/%d/%y') %}
+
+            {% if datestring != vars.stripe_date %}
+            {% set vars.stripe_date = datestring %}
+            {% if vars.row_class == "" %}
+            {% set vars.row_class = "table-secondary" %}
+            {% else %}
+            {% set vars.row_class = "" %}
+            {% endif %}
+
+            {% endif %}
+
+            <tr class="{{ vars.row_class }}">
+                <td>{{ datestring }}</td>
                 <td class="text-center">
                     <a href="{{url_for('expenses.expense', id=expense.id)}}">
                         {{ expense.title }}
@@ -66,12 +81,10 @@
                             alt="Repeat" title="Repeat" />
                     </a>
                 </td>
-
             </tr>
             {% endfor %}
         </tbody>
         {% endblock %}
-
     </table>
 </div>
 {% block load_more_btn %}
